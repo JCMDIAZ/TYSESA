@@ -4,7 +4,7 @@ Imports System.Text.RegularExpressions
 
 
 Public Class FrmMarcas
-    Dim clave, razon, abr, rfc, calle, noext, noint, postal, munic, estado, pais, colonia, refer, tel, email, contacto As String
+    Dim clave, razon, abr, rfc, calle, noext, noint, postal, munic, estado, pais, colonia, refer, tel, email, contacto, cBarras As String
     Dim act As Boolean
     Dim idCreCli As Int32
     Dim traemonto As Double
@@ -126,7 +126,7 @@ Public Class FrmMarcas
         End Try
     End Sub
     Private Sub CargaGrid()
-        Dim SqlSel As New SqlDataAdapter("SELECT a.Clave, a.razon, a.abreviatura, a.rfc, a.calle, a.calle1,a.calle2, a.noext, a.noint, a.codigop, a.municipio, b.estado, c.pais, a.colonia, a.refer, a.telefono, a.email, a.contacto, a.activo, a.NoExtTel FROM clientes a, estados b, paises c where a.estado = b.id_edo and b.pais = c.id_pais order by a.clave ", SqlCnn)
+        Dim SqlSel As New SqlDataAdapter("SELECT a.Clave, a.razon, a.abreviatura, a.rfc, a.calle, a.calle1,a.calle2, a.noext, a.noint, a.codigop, a.municipio, b.estado, c.pais, a.colonia, a.refer, a.telefono, a.email, a.contacto, a.activo, a.NoExtTel, codigoBarras FROM clientes a, estados b, paises c where a.estado = b.id_edo and b.pais = c.id_pais order by a.clave ", SqlCnn)
         Dim DS As New DataTable
         Try
             SqlSel.Fill(DS)
@@ -178,18 +178,20 @@ Public Class FrmMarcas
     End Sub
     Private Function guardacliente()
         contacto = Me.TXTCONTACTO.Text.Trim
-        Dim Sqltempsal As New SqlCommand(" declare @ID_CreditoCliente int DECLARE @EDO int DECLARE @PAI int SET @EDO = (SELECT id_edo FROM Estados WHERE estado = '" & estado & "') SET @PAI = (SELECT id_pais FROM Paises WHERE pais = '" & pais & "') IF EXISTS(SELECT * FROM clientes WHERE clave = '" & Me.TxtCodigo.Text & "') " & _
-        "BEGIN " & _
-        "UPDATE clientes SET razon = '" & razon & "' , abreviatura = '" & abr & "', rfc = '" & rfc & "', calle = '" & calle & "', calle1 = '" & Me.TXTCALLE2.Text.Trim & "', calle2 = '" & Me.TXTCALLE3.Text.Trim & "',noext = '" & noext & "',noint = '" & noint & "',codigop = '" & postal & "'," & _
-        " municipio = '" & munic & "' ,estado = @EDO ,pais = @PAI ,colonia = '" & colonia & "' ,refer = '" & refer & "' ,telefono = '" & tel & "' ,email = '" & email & "' ,contacto = '" & contacto & "' , activo = '" & act & "', NoExtTel = '" & Me.TEXTNoExtTel.Text.Trim & "' " & _
-        "WHERE clave = '" & Me.TxtCodigo.Text & "' " & _
-        "END " & _
-        "ELSE " & _
-        "BEGIN " & _
-        "INSERT INTO clientes(clave,razon,abreviatura,empresa,rfc,sucursal,calle,calle1,calle2,noext,noint,colonia,codigop,municipio,estado,pais,refer,telefono,email,contacto,activo, NoExtTel,FIngreso) VALUES('" & clave & "','" & razon & "','" & abr & "','" & razon & "','" & rfc & "','MTR','" & calle & "','" & Me.TXTCALLE2.Text.Trim & "','" & Me.TXTCALLE3.Text.Trim & "','" & noext & "','" & noint & "','" & colonia & "','" & postal & "','" & munic & "',@EDO,@PAI,'" & refer & "','" & tel & "','" & email & "','" & contacto & "','" & act & "','" & Me.TEXTNoExtTel.Text.Trim & "', getdate()) " & _
-        " END " & _
-        "IF NOT EXISTS(SELECT * FROM Cat_ClienteRuta WHERE IDMAQUINA = '" & Me.TxtCodigo.Text.Trim & "' ) " & _
-        "Begin INSERT INTO Cat_ClienteRuta (IDMAQUINA,CODEMAQ,DESCRIPCION,TOTAL,DIRECCION,INSTALACION,RUTA) Values ('" & Me.TxtCodigo.Text.Trim & "','" & Me.TxtCodigo.Text.Trim & "','" & razon & "', 0,'" & calle & "', getdate(), 0) End ELSE  " & _
+        Dim Sqltempsal As New SqlCommand(" declare @ID_CreditoCliente int DECLARE @EDO int DECLARE @PAI int SET @EDO = (SELECT id_edo FROM Estados WHERE estado = '" & estado & "') SET @PAI = (SELECT id_pais FROM Paises WHERE pais = '" & pais & "') IF EXISTS(SELECT * FROM clientes WHERE clave = '" & Me.TxtCodigo.Text & "') " &
+        "BEGIN " &
+        "UPDATE clientes SET razon = '" & razon & "' , abreviatura = '" & abr & "', rfc = '" & rfc & "', calle = '" & calle & "', calle1 = '" & Me.TXTCALLE2.Text.Trim & "', calle2 = '" & Me.TXTCALLE3.Text.Trim & "',noext = '" & noext & "',noint = '" & noint & "',codigop = '" & postal & "', codigoBarras = " & Me.TXTBOXCodBarr.Text & "," &
+        " municipio = '" & munic & "' ,estado = @EDO ,pais = @PAI ,colonia = '" & colonia & "' ,refer = '" & refer & "' ,telefono = '" & tel & "' ,email = '" & email & "' ,contacto = '" & contacto & "' , activo = '" & act & "', NoExtTel = '" & Me.TEXTNoExtTel.Text.Trim & "' " &
+        "WHERE clave = '" & Me.TxtCodigo.Text & "' " &
+        "END " &
+        "ELSE " &
+        "BEGIN SET IDENTITY_INSERT clientes ON " &
+        "INSERT INTO clientes(clave,razon,abreviatura,empresa,rfc,sucursal,calle,calle1,calle2,noext,noint,colonia,codigop,municipio,estado,pais,refer,telefono,email,contacto,activo, NoExtTel, FIngreso, codigoBarras) VALUES('" &
+        clave & "','" & razon & "','" & abr & "','" & razon & "','" & rfc & "','MTR','" & calle & "','" & Me.TXTCALLE2.Text.Trim & "','" & Me.TXTCALLE3.Text.Trim & "','" & noext & "','" & noint & "','" & colonia & "','" &
+        postal & "','" & munic & "',@EDO,@PAI,'" & refer & "','" & tel & "','" & email & "','" & contacto & "','" & act & "','" & Me.TEXTNoExtTel.Text.Trim & "', getdate(), " & Me.TXTBOXCodBarr.Text.Trim & ") " &
+        "SET IDENTITY_INSERT clientes OFF  END " &
+        "IF NOT EXISTS(SELECT * FROM Cat_ClienteRuta WHERE IDMAQUINA = '" & Me.TxtCodigo.Text.Trim & "' ) " &
+        "Begin INSERT INTO Cat_ClienteRuta (IDMAQUINA,CODEMAQ,DESCRIPCION,TOTAL,DIRECCION,INSTALACION,RUTA) Values ('" & Me.TxtCodigo.Text.Trim & "','" & Me.TxtCodigo.Text.Trim & "','" & razon & "', 0,'" & calle & "', getdate(), 0) End ELSE  " &
         "BEGIN UPDATE Cat_ClienteRuta SET CODEMAQ = '" & Me.TxtCodigo.Text.Trim & "', DESCRIPCION = '" & razon & "', DIRECCION = '" & Me.TXTCALLE1.Text.Trim & "' WHERE IDMAQUINA = '" & Me.TxtCodigo.Text.Trim & "'  END ", SqlCnn)
         Dim SqlRead As SqlDataReader
         Try
@@ -293,6 +295,9 @@ Public Class FrmMarcas
             If .TEXTNoExtTel.Text = Nothing Then
                 .TEXTNoExtTel.Text = 0
             End If
+            If .TXTBOXCodBarr.Text = Nothing Then
+                .TXTBOXCodBarr.Text = .TxtCodigo.Text
+            End If
         End With
 
     End Sub
@@ -393,7 +398,7 @@ Public Class FrmMarcas
             If DGCLIENTES.Rows(e.RowIndex).Cells("Clave").Value IsNot DBNull.Value Then
                 Exis = True
                 TxtCodigo.Text = DGCLIENTES.Rows(e.RowIndex).Cells("Clave").Value
-                Me.TXTBOXCodBarr.Text = TxtCodigo.Text
+                Me.TXTBOXCodBarr.Text = DGCLIENTES.Rows(e.RowIndex).Cells("codigoBarras").Value
                 TxtRazon.Text = DGCLIENTES.Rows(e.RowIndex).Cells("Razon").Value
                 txtAbr.Text = DGCLIENTES.Rows(e.RowIndex).Cells("Abreviatura").Value
                 txtRFC.Text = DGCLIENTES.Rows(e.RowIndex).Cells("RFC").Value
@@ -505,7 +510,7 @@ Public Class FrmMarcas
         If TextBox2.Text <> Nothing Then
 
             'Dim SqlSel As New SqlDataAdapter("SELECT FROM Clientes WHERE  Razon like '%" & TextBox2.Text & "%'", SqlCnn)
-            Dim SqlSel As New SqlDataAdapter("SELECT a.Clave, a.Razon, a.Abreviatura, a.RFC, a.calle,a.calle1, a.calle2, a.noext, a.noint, a.codigop, a.municipio, b.estado, c.pais, a.colonia, a.refer, a.telefono,a.email, a.contacto, a.activo, a.NoExtTel FROM clientes a, estados b, paises c where a.estado = b.id_edo and b.pais = c.Id_pais and   Razon like '%" & TextBox2.Text & "%'", SqlCnn)
+            Dim SqlSel As New SqlDataAdapter("SELECT a.Clave, a.Razon, a.Abreviatura, a.RFC, a.calle,a.calle1, a.calle2, a.noext, a.noint, a.codigop, a.municipio, b.estado, c.pais, a.colonia, a.refer, a.telefono,a.email, a.contacto, a.activo, a.NoExtTel, codigoBarras FROM clientes a, estados b, paises c where a.estado = b.id_edo and b.pais = c.Id_pais and   Razon like '%" & TextBox2.Text & "%'", SqlCnn)
 
             Dim DS1 As New DataTable
             Try
@@ -637,7 +642,7 @@ Public Class FrmMarcas
         Me.txtCredito.Text = "0.00"
         Me.LblStatusCredito.Text = ""
         Me.TxtCodigo.Text = GENERAIDCLIENTE()
-        Me.TXTBOXCodBarr.Text = Me.TxtCodigo.Text
+        'Me.TXTBOXCodBarr.Text = Me.TxtCodigo.Text
     End Sub
 
     Private Sub TXTTEL_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles TXTTEL.KeyPress

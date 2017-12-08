@@ -24,8 +24,8 @@ Module General
     Public BDMSQL As String = "miisacom_prestashop_industrial"
     Public UsuCate As String
     Public ConeccionFallida As Boolean
-    'Private NomServer As String = "SISTEMAS\DESARROLLOVT"
-    Private NomServer As String = "LOCALHOST"
+    Private NomServer As String = "LOCALHOST\MSSQLSERVER16"
+    'Private NomServer As String = "DESKTOP-GF9NIP9\SQLVT"
     'SISTEMAS\DESARROLLOVT
     Private NomBD As String = "SNROQUE"
     Private NomUser As String = "Client01Ap"
