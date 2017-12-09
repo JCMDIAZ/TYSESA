@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TYSESA", "TYSESA.vbproj", "{462DEBE3-BCB5-4590-83BE-1F4A80986676}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SWYRA", "SWYRA.vbproj", "{462DEBE3-BCB5-4590-83BE-1F4A80986676}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
