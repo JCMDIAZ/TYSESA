@@ -43,7 +43,7 @@ Partial Class Reports_13
         Me.CrystalReportViewer1.SelectionFormula = ""
         Me.CrystalReportViewer1.Size = New System.Drawing.Size(1103, 464)
         Me.CrystalReportViewer1.TabIndex = 1
-        Me.CrystalReportViewer1.ToolPanelWidth = 267
+        'Me.CrystalReportViewer1.ToolPanelWidth = 267
         Me.CrystalReportViewer1.ViewTimeSelectionFormula = ""
         '
         'DTPDe

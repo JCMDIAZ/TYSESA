@@ -24,15 +24,16 @@ Module General
     Public BDMSQL As String = "miisacom_prestashop_industrial"
     Public UsuCate As String
     Public ConeccionFallida As Boolean
-    Private NomServer As String = "LOCALHOST\MSSQLSERVER16"
+    Private NomServer As String = "192.168.1.99"
     'Private NomServer As String = "DESKTOP-GF9NIP9\SQLVT"
     'SISTEMAS\DESARROLLOVT
-    Private NomBD As String = "SNROQUE"
+    Private NomBD As String = "SNROQUEC"
     Private NomUser As String = "Client01Ap"
     Private NomPass As String = "Cl01SeA"
     'Private NomUser As String = "sa"
     'Private NomPass As String = "Positivo01"
     Public mmaid As Int32
+    Public ssma As String = ""
 
     Public Sub Conecta(ByVal NoSer As String)
         Dim nv As Integer = 0
@@ -122,7 +123,7 @@ Module General
             Dim sema As String = mo("MacAddress")
             If Not sema Is Nothing Then
                 'obma = sema
-
+                ssma = sema
                 obma = SelMaq(sema)
                 'MsgBox(sema & "/" & obma)
                 If obma <> "" Then
@@ -167,7 +168,7 @@ Module General
         vallic = namma()
         'If vallic = "" Then
         If vallic = 0 Then
-            Valido = "La pc no esta dado de alta"
+            Valido = "La pc no esta dado de alta " & ssma
             Return Valido
             Exit Function
         End If
